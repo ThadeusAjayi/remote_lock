@@ -6,3 +6,4 @@ export function fetchDevices(query) {
     res.json()
   );
 }
+//Localhost doesn't work on android, change localhost to ip that the expo client is running on
