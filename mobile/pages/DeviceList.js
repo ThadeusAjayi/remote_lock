@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { FlatList, Text, View, StyleSheet } from "react-native";
+import { FlatList, TextInput, StyleSheet } from "react-native";
 import DeviceCard from "../components/DeviceCard";
 import { fetchDevices } from "lib/api";
 
 function DeviceList() {
   const [devices, setDevices] = useState([]);
   useEffect(() => {
-    fetchDevices().then((res) => setDevices(res.data));
+    fetchDevices("").then((res) => setDevices(res.data));
   }, []);
 
   const changeDeviceStatus = (deviceId) => {
@@ -20,21 +20,42 @@ function DeviceList() {
     setDevices(updateDevices);
   };
 
+  const onChangeText = (text) => {
+    fetchDevices(text).then((res) => setDevices(res.data));
+  };
+
   return (
-    <View style={{ backgroundColor: "red" }}>
+    <>
+      <TextInput
+        onChangeText={onChangeText}
+        style={styles.searchInput}
+        placeholder={"Search devices"}
+      />
       <FlatList
-        style={{
-          backgroundColor: "#EEEEEE",
-          padding: 3,
-        }}
+        style={styles.list}
         data={devices}
         renderItem={({ item }) => (
           <DeviceCard item={item} onValueChange={changeDeviceStatus} />
         )}
         keyExtractor={(x) => x.id}
       />
-    </View>
+    </>
   );
 }
+
+const styles = StyleSheet.create({
+  list: {
+    backgroundColor: "#EEEEEE",
+    padding: 3,
+  },
+  searchInput: {
+    backgroundColor: "white",
+    marginHorizontal: 13,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginTop: 10,
+    borderRadius: 4,
+  },
+});
 
 export default DeviceList;
