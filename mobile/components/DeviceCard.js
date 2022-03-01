@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     marginTop: 5,
     flexDirection: "row",
+    alignItems: "center",
     padding: 10,
     marginHorizontal: 10,
     shadowColor: "#000",
@@ -17,42 +18,56 @@ const styles = StyleSheet.create({
     shadowRadius: 2.22,
     elevation: 3,
   },
+  image: {
+    height: 80,
+    width: 80,
+    borderRadius: 40,
+    overflow: "hidden",
+    marginRight: 20,
+  },
+  name: { fontWeight: "700", fontSize: 18 },
+  lockState: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  model: {
+    color: "#00000050",
+  },
 });
 
-const statusColors = { current: "#C5F6A7", upcoming: "#F4F6A7" };
+const stateColor = { locked: "red", unlocked: "green" };
 
-function UserStatus({ status }) {
-  const styles = { backgroundColor: statusColors[status] };
+function LockStatus({ status }) {
+  const styles = { color: stateColor[status] };
   return <Text style={styles}>{status}</Text>;
 }
 
-function UserCard({ item: { attributes } }) {
+function UserCard({
+  item: {
+    attributes: { name, model_number, state },
+    id,
+  },
+  onValueChange,
+}) {
   return (
     <View style={styles.container}>
       <Image
         source={{
           uri: "http://placekitten.com/g/30/30",
         }}
-        style={{
-          height: 60,
-          width: 60,
-          borderRadius: 30,
-          overflow: "hidden",
-          marginRight: 10,
-        }}
+        style={styles.image}
       />
       <View style={{ flex: 1 }}>
-        <Text>Home</Text>
-        <Text>BG</Text>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Switch />
-          <Text>BG</Text>
+        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.model}>{model_number}</Text>
+        <View style={styles.lockState}>
+          <Switch
+            value={state == "locked" ? true : false}
+            onValueChange={() => onValueChange(id)}
+          />
+          <LockStatus status={state} />
         </View>
       </View>
     </View>
